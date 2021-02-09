@@ -3,7 +3,7 @@
 const http = require('http');
 const express = require('express');
 const path = require('path');
-const asp = require('./index.js');
+const asp = require('./lib/index.js');
 
 asp.configure({
     removeLockString: true,
@@ -54,5 +54,5 @@ console.log("Please open the link in your browser http://localhost:" +
 app.get('/files', asp.get);
 
 app.get('/', function(req, res) {
-    res.redirect('lib/template.html');
+    res.redirect('app/template.html');
 });
