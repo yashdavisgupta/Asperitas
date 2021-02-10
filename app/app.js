@@ -56,6 +56,7 @@ function constructTable(data){
   tab = document.createElement('table');
   for(file in data){
     tr = document.createElement('tr');
+    console.log(data[file].Path)
     if(data[file].IsDirectory){
       path = '/files?path='+data[file].Path
       tr.setAttribute("onclick","refreshTable('"+path+"'); currentPath = path;");
