@@ -41,8 +41,6 @@ app.get('/b', function(req, res) {
 app.use(express.static(__dirname)); // module directory
 var server = http.createServer(app);
 
-asp.setcwd(dir, argv.include, argv.exclude);
-
 if(!argv.port) argv.port = 8080;
 
 server.listen(argv.port);

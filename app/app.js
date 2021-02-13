@@ -75,8 +75,14 @@ function constructTable(data){
     }
     var name = document.createElement('td');
     name.appendChild(document.createTextNode(data[file].Name));
+    var size = document.createElement('td');
+    size.appendChild(document.createTextNode(data[file].Size ? data[file].Size : ''));
+    var modified = document.createElement('td');
+    modified.appendChild(document.createTextNode(new Date(data[file].Modified).toDateString()));
     tr.appendChild(icon);
     tr.appendChild(name);
+    tr.appendChild(size);
+    tr.appendChild(modified);
     tab.appendChild(tr);
   }
   document.getElementById('directory-viewer').innerHTML = '';
