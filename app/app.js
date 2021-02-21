@@ -56,10 +56,9 @@ function constructTable(data){
   tab = document.createElement('table');
   for(file in data){
     tr = document.createElement('tr');
-    console.log(data[file].Path)
     if(data[file].IsDirectory){
       path = '/files?path='+data[file].Path
-      tr.setAttribute("onclick","refreshTable('"+path+"'); currentPath = path;");
+      tr.setAttribute("onclick","refreshTable('"+path+"'); currentPath = '"+data[file].Path+"';");
       var icon = document.createElement('td');
       icon.innerHTML="<i class='fa fa-folder'></i>"
     }
@@ -75,12 +74,19 @@ function constructTable(data){
     }
     var name = document.createElement('td');
     name.appendChild(document.createTextNode(data[file].Name));
+    var size = document.createElement('td');
+    size.appendChild(document.createTextNode(data[file].Size ? data[file].Size : ''));
+    var modified = document.createElement('td');
+    modified.appendChild(document.createTextNode(new Date(data[file].Modified).toDateString()));
     tr.appendChild(icon);
     tr.appendChild(name);
+    tr.appendChild(size);
+    tr.appendChild(modified);
     tab.appendChild(tr);
   }
   document.getElementById('directory-viewer').innerHTML = '';
   document.getElementById('directory-viewer').appendChild(tab);
+  console.log(currentPath);
 }
 
 refreshTable('/files')
