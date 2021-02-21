@@ -1,16 +1,46 @@
 function refreshTable(path){
-var request = new XMLHttpRequest();
-request.open('GET', path, true);
-request.onload = function() {
-  if (this.status >= 200 && this.status < 400) {
-    var data = JSON.parse(this.response);
-    constructTable(data);
-  } else {
+  //don't do reloads if we are already in the right path
+  if (path == currentPath) return;
+  //directory view refresh
+  var request = new XMLHttpRequest();
+  request.open('GET', '/files?path=' + path, true);
+  request.onload = function() {
+    if (this.status >= 200 && this.status < 400) {
+      var data = JSON.parse(this.response);
+      constructTable(data);
+    } else {
+    }
+  };
+  request.onerror = function() {
+  };
+  request.send();
+  //set new current Path
+  currentPath = path;
+  //
+  breadcrumb = document.getElementById('breadcrumb');
+  while (breadcrumb.hasChildNodes()) { //Need to do this to remove all elements and their events.
+    breadcrumb.removeChild(breadcrumb.firstChild);
   }
-};
-request.onerror = function() {
-};
-request.send();
+  //home link
+  a = document.createElement("li")
+  a.className = 'home';
+  a.setAttribute("onclick", "refreshTable('');");
+  a.textContent = 'Home';
+  breadcrumb.appendChild(a);
+  //everything else
+  arr = path.split("/")
+  vpath = '';
+  arr.some((p) => {
+    if (p == '') {
+      return;
+    }
+    vpath = vpath + '/' + p;
+    a = document.createElement("li")
+    a.setAttribute("onclick", "refreshTable('"+vpath+"');");
+    a.textContent = p;
+    breadcrumb.appendChild(a);
+  });
+  vpath = '';
 };
 
 var extensionsMap = {
@@ -49,16 +79,13 @@ function getFileIcon(ext) {
   return ( ext && extensionsMap[ext.toLowerCase()]) || 'fa-file-o';
 }
 
-var currentPath = null;
-
 //everything about this is bad.
 function constructTable(data){
   tab = document.createElement('table');
   for(file in data){
     tr = document.createElement('tr');
     if(data[file].IsDirectory){
-      path = '/files?path='+data[file].Path
-      tr.setAttribute("onclick","refreshTable('"+path+"'); currentPath = '"+data[file].Path+"';");
+      tr.setAttribute("onclick","refreshTable('"+data[file].Path+"');");
       var icon = document.createElement('td');
       icon.innerHTML="<i class='fa fa-folder'></i>"
     }
@@ -67,8 +94,7 @@ function constructTable(data){
       if (data.Root) {
         rstr = 'r=' + data[file].Root + '&';
       }
-      path = '/b?'+rstr+'f='+data[file].Path
-      tr.setAttribute("onclick","window.location = '"+path+"';");
+      tr.setAttribute("onclick","window.location = '" + '/b?'+rstr+'f='+data[file].Path +"';");
       var icon = document.createElement('td');
       icon.innerHTML="<i class='fa "+getFileIcon(data[file].Ext) + "'></i>"
     }
@@ -86,27 +112,15 @@ function constructTable(data){
   }
   document.getElementById('directory-viewer').innerHTML = '';
   document.getElementById('directory-viewer').appendChild(tab);
-  console.log(currentPath);
 }
 
-refreshTable('/files')
 
 document.getElementById('up').addEventListener("click",  function(){
   if (!currentPath) return;
   var idx = currentPath.lastIndexOf("/");
   var path = currentPath.substr(0, idx);
-  var request = new XMLHttpRequest();
-  request.open('GET', '/files?path='+ path, true);
-  request.onload = function() {
-    if (this.status >= 200 && this.status < 400) {
-      var data = JSON.parse(this.response);
-      constructTable(data);
-      currentPath = path;
-    } else {
-
-    }
-  };
-  request.onerror = function() {
-  };
-  request.send();
+  refreshTable(path);
 });
+
+var currentPath = null;
+refreshTable('')
