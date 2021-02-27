@@ -14,3 +14,22 @@
   padding-left: 10px;
   padding-right:10px;
 }
+
+ul#breadcrumb {
+ list-style: none;
+}
+
+ul#breadcrumb li {
+ display: inline;
+}
+
+ul#breadcrumb li.home::before {
+ font-family: "FontAwesome";
+ content: "\f015";
+}
+
+
+ul#breadcrumb li+li::before {
+ font-family: "FontAwesome";
+ content: "\f105";
+}

@@ -9,7 +9,6 @@ const formidable = require('formidable');
 
 asp.configure({
     removeLockString: true,
-    otherRoots: []
 });
 
 var argv = require('yargs')
@@ -25,17 +24,7 @@ const app = express();
 
 var dir =  process.cwd();
 app.get('/b', function(req, res) {
-    let file;
-    if (req.query.r === '/tmp') {
-
-        /*
-         * OTHERROOTS
-         * This is an example of a manually calculated path.
-         */
-        file = path.join(req.query.r,req.query.f);
-    } else {
-        file = path.join(dir,req.query.f);
-    }
+    file = path.join(dir,req.query.f);
     res.sendFile(file);
 })
 
