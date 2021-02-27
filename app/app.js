@@ -1,3 +1,4 @@
+//Handles the creation and population of directory viewer and breadcrumb
 function refreshTable(path){
 var request = new XMLHttpRequest();
 request.open('GET', path, true);
@@ -56,9 +57,10 @@ function constructTable(data){
   tab = document.createElement('table');
   for(file in data){
     tr = document.createElement('tr');
+    console.log(data[file].Path)
     if(data[file].IsDirectory){
       path = '/files?path='+data[file].Path
-      tr.setAttribute("onclick","refreshTable('"+path+"'); currentPath = '"+data[file].Path+"';");
+      tr.setAttribute("onclick","refreshTable('"+path+"'); currentPath = path;");
       var icon = document.createElement('td');
       icon.innerHTML="<i class='fa fa-folder'></i>"
     }
@@ -74,19 +76,12 @@ function constructTable(data){
     }
     var name = document.createElement('td');
     name.appendChild(document.createTextNode(data[file].Name));
-    var size = document.createElement('td');
-    size.appendChild(document.createTextNode(data[file].Size ? data[file].Size : ''));
-    var modified = document.createElement('td');
-    modified.appendChild(document.createTextNode(new Date(data[file].Modified).toDateString()));
     tr.appendChild(icon);
     tr.appendChild(name);
-    tr.appendChild(size);
-    tr.appendChild(modified);
     tab.appendChild(tr);
   }
   document.getElementById('directory-viewer').innerHTML = '';
   document.getElementById('directory-viewer').appendChild(tab);
-  console.log(currentPath);
 }
 
 refreshTable('/files')
@@ -110,3 +105,41 @@ document.getElementById('up').addEventListener("click",  function(){
   };
   request.send();
 });
+
+//Drag and drop upload
+let directoryViewer = document.getElementById('directory-viewer');
+
+function preventDefaults (e) {
+  e.preventDefault()
+  e.stopPropagation()
+}
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  directoryViewer.addEventListener(eventName, preventDefaults, false)
+})
+
+directoryViewer.addEventListener('drop', onFilesDrop, false)
+
+function onFilesDrop(e) {
+  let dt = e.dataTransfer
+  let files = dt.files
+  files = [...files];
+  files.forEach(uploadFile)
+}
+
+function uploadFile(file) {
+  var xhr = new XMLHttpRequest()
+  var formData = new FormData()
+  xhr.open('POST', '/upload', true)
+  xhr.addEventListener('readystatechange', function(e) {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      // Done. Inform the user
+    }
+    else if (xhr.readyState == 4 && xhr.status != 200) {
+      // Error. Inform the user
+    }
+  })
+  formData.append('file', file)
+  formData.append('directory', currentPath)
+  xhr.send(formData)
+}
