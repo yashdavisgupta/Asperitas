@@ -85,7 +85,6 @@ function constructTable(data){
   tab = document.createElement('table');
   for(file in data){
     tr = document.createElement('tr');
-    console.log(data[file].Path)
     if(data[file].IsDirectory){
       tr.setAttribute("onclick","refreshTable('"+data[file].Path+"');");
       var icon = document.createElement('td');

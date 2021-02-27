@@ -32,7 +32,7 @@ app.post('/upload', (req, res, next) => {
     const form = new formidable.IncomingForm();
     form.parse(req, function(err, fields, files){
         var oldPath = files.file.path;
-        var newPath = __dirname + fields.directory + '/' +files.file.name
+        var newPath = './' + fields.directory + '/' +files.file.name
         var rawData = fs.readFileSync(oldPath)
         fs.writeFile(newPath, rawData, function(err){
             if(err) console.log(err)
