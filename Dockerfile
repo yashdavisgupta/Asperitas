@@ -1,5 +1,6 @@
 FROM node:14
+RUN npm install --global pnpm
 WORKDIR /usr/app
 COPY package.json .
-RUN npm install --quiet
+RUN pnpm install --quiet
 COPY . .
