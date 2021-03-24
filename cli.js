@@ -38,7 +38,31 @@ app.post('/upload', (req, res, next) => {
             if(err) console.log(err)
             return res.send("Successfully uploaded")
         })
-  })
+    })
+});
+
+app.post('/delete', (req, res, next) => {
+    const form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files){
+    var path = './' + fields.f
+      try {
+        if (fs.existsSync(path)) {
+          if (fs.lstatSync(path).isDirectory()){
+            fs.rmdir(path, { recursive: true }, (err) => {
+              if (err) console.error(err)
+              return res.send("Directory Successfully Deleted")
+            });
+          } else {
+            fs.unlink(path, (err) => {
+              if (err) console.error(err)
+              return res.send("File Successfully Deleted")
+            })
+          }
+      }
+      } catch(err) {
+        console.error('File or folder: ' + path + 'does not exist')
+      }
+    })
 });
 
 app.use(express.static(__dirname)); // module directory

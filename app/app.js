@@ -1,7 +1,5 @@
 //Handles the creation and population of directory viewer and breadcrumb
 function refreshTable(path){
-  //don't do reloads if we are already in the right path
-  if (path == currentPath) return;
   //directory view refresh
   var request = new XMLHttpRequest();
   request.open('GET', '/files?path=' + path, true);
@@ -101,8 +99,12 @@ function constructTable(data){
     }
     var name = document.createElement('td');
     name.appendChild(document.createTextNode(data[file].Name));
+    var del = document.createElement('td');
+    del.setAttribute("onclick","event.stopPropagation(); deleteFileOrFolder('"+data[file].Path+"');");
+    del.innerHTML="<i class='fa fa-apple'></i>"
     tr.appendChild(icon);
     tr.appendChild(name);
+    tr.appendChild(del);
     tab.appendChild(tr);
   }
   document.getElementById('directory-viewer').innerHTML = '';
@@ -152,6 +154,22 @@ function uploadFile(file) {
   })
   formData.append('file', file)
   formData.append('directory', currentPath)
+  xhr.send(formData)
+}
+
+function deleteFileOrFolder(f) {
+  var xhr = new XMLHttpRequest()
+  var formData = new FormData()
+  xhr.open('POST', '/delete', true)
+  xhr.addEventListener('readystatechange', function(e) {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      // Done. Inform the user
+    }
+    else if (xhr.readyState == 4 && xhr.status != 200) {
+      // Error. Inform the user
+    }
+  })
+  formData.append('f', f)
   xhr.send(formData)
 }
 
