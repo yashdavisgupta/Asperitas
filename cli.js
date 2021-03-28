@@ -43,8 +43,8 @@ app.post('/upload', (req, res, next) => {
 
 app.post('/delete', (req, res, next) => {
     const form = new formidable.IncomingForm();
-    form.parse(req, function(err, fields, files){
-    var path = './' + fields.f
+    form.parse(req, function(err, fields){
+    var path = fields.f
       try {
         if (fs.existsSync(path)) {
           if (fs.lstatSync(path).isDirectory()){
@@ -63,6 +63,23 @@ app.post('/delete', (req, res, next) => {
         console.error('File or folder: ' + path + 'does not exist')
       }
     })
+});
+
+app.post('/move', (req, res, next) => {
+    const form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields){
+    console.log(fields.s + ', ' + fields.d);
+    var oldPath = fields.s
+    var newPath = fields.d + '/' + oldPath.substr(oldPath.lastIndexOf("/"), oldPath.length);
+    console.log(oldPath + ', ' + newPath);
+    fs.rename(oldPath, newPath, function(err) {
+      if (err) {
+        throw err
+      } else {
+        console.log("Successfully moved the file!")
+      }
+    })
+  })
 });
 
 app.use(express.static(__dirname)); // module directory
