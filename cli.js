@@ -4,6 +4,8 @@ const http = require('http');
 const express = require('express');
 const path = require('path');
 const asp = require('./lib/index.js');
+const fs = require('fs');
+const formidable = require('formidable');
 
 asp.configure({
     removeLockString: true,
@@ -26,6 +28,59 @@ app.get('/b', function(req, res) {
     res.sendFile(file);
 })
 
+app.post('/upload', (req, res, next) => {
+    const form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files){
+        var oldPath = files.file.path;
+        var newPath = './' + fields.directory + '/' +files.file.name
+        var rawData = fs.readFileSync(oldPath)
+        fs.writeFile(newPath, rawData, function(err){
+            if(err) console.log(err)
+            return res.send("Successfully uploaded")
+        })
+    })
+});
+
+app.post('/delete', (req, res, next) => {
+    const form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields){
+    var path = fields.f
+      try {
+        if (fs.existsSync(path)) {
+          if (fs.lstatSync(path).isDirectory()){
+            fs.rmdir(path, { recursive: true }, (err) => {
+              if (err) console.error(err)
+              return res.send("Directory Successfully Deleted")
+            });
+          } else {
+            fs.unlink(path, (err) => {
+              if (err) console.error(err)
+              return res.send("File Successfully Deleted")
+            })
+          }
+      }
+      } catch(err) {
+        console.error('File or folder: ' + path + 'does not exist')
+      }
+    })
+});
+
+app.post('/move', (req, res, next) => {
+    const form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields){
+    console.log(fields.s + ', ' + fields.d);
+    var oldPath = fields.s
+    var newPath = fields.d + '/' + oldPath.substr(oldPath.lastIndexOf("/"), oldPath.length);
+    console.log(oldPath + ', ' + newPath);
+    fs.rename(oldPath, newPath, function(err) {
+      if (err) {
+        throw err
+      } else {
+        console.log("Successfully moved the file!")
+      }
+    })
+  })
+});
 
 app.use(express.static(__dirname)); // module directory
 var server = http.createServer(app);

@@ -14,13 +14,22 @@
   <body>
   Asperitas
    <div class="panel">
-                   <ul id="breadcrumb"></ul>
-                   <span id="up">
-                    <i class="fa fa-level-up"></i> Up
+                   <ul id="breadcrumb" class="breadcrumb"></ul>
+                   <span id="up" class="up">
+                    <i class="fa fa-level-up"></i>
                    </span>
               <div id="directory-viewer">
               </div>
   </div>
-    <script src="/app/app.js"></script>
+  <div id="modal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span id="modal-close" class="close">&times;</span>
+      <div id="modal-content">
+      </div>
+      <div onclick="moveFileOrFolder(moveSource, moveDest)">Move</div>
+    </div>
+  </div>
+  <script src="/app/app.js"></script>
   </body>
 </html>
