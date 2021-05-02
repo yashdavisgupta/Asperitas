@@ -25,7 +25,7 @@ function refreshDirectoryViewer(path){
   //home link
   a = document.createElement("li")
   a.className = 'home';
-  a.setAttribute("onclick", "refreshDirectoryViewer('');");
+  a.setAttribute("ondblclick", "refreshDirectoryViewer('');");
   a.textContent = 'Home';
   breadcrumb.appendChild(a);
   //everything else
@@ -37,7 +37,7 @@ function refreshDirectoryViewer(path){
     }
     vpath = vpath + '/' + p;
     a = document.createElement("li")
-    a.setAttribute("onclick", "refreshDirectoryViewer('"+vpath+"');");
+    a.setAttribute("ondblclick", "refreshDirectoryViewer('"+vpath+"');");
     a.textContent = p;
     breadcrumb.appendChild(a);
   });
@@ -86,7 +86,7 @@ function constructTable(data){
   for(file in data){
     tr = document.createElement('tr');
     if(data[file].IsDirectory){
-      tr.setAttribute("onclick", "refreshDirectoryViewer('"+data[file].Path+"');");
+      tr.setAttribute("ondblclick", "refreshDirectoryViewer('"+data[file].Path+"');");
       tr.setAttribute("path", data[file].Path);
       var icon = document.createElement('td');
       icon.innerHTML="<i class='fa fa-folder'></i>"
@@ -96,7 +96,7 @@ function constructTable(data){
       if (data.Root) {
         rstr = 'r=' + data[file].Root + '&';
       }
-      tr.setAttribute("onclick","window.location = '" + '/b?'+rstr+'f='+data[file].Path +"';");
+      tr.setAttribute("ondblclick","window.location = '" + '/b?'+rstr+'f='+data[file].Path +"';");
       tr.setAttribute("path", data[file].Path);
       var icon = document.createElement('td');
       icon.innerHTML="<i class='fa "+getFileIcon(data[file].Ext) + "'></i>"
