@@ -1,5 +1,8 @@
 FROM node:14
-RUN npm install --global pnpm
+RUN npm install --global pnpm spago
+COPY packages.dhall .
+COPY spago.dhall .
+RUN spago install
 WORKDIR /usr/app
 COPY package.json .
 RUN pnpm install --quiet
