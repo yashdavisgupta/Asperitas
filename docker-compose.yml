@@ -2,9 +2,7 @@ version: '2'
 services:
   web:
     build: .
-    command: pnpm run dev
-    stdin_open: true
-    tty: true
+    command: node ./cli.js
     volumes:
       - .:/usr/app/
       - /usr/app/node_modules
